@@ -97,13 +97,14 @@ def draw_lines(img, lines, color=[0,0,255], thickness=2):
 
         cv2.line(img, (x1, y1), (x2, y2), color, thickness)
 
-def hough_lines(mask, origin, threshold):
+def hough_lines(mask, origin=0, threshold=55):
     lines = cv2.HoughLines(mask, 1, np.pi / 180, threshold)
-    line_imge = origin#np.zeros((img.shape[0], img.shape[1],3), dtype=np.uint8)
-    draw_lines(line_imge, lines)
-    return line_imge
+    line_img = origin#
+    if line_img == 0 : line_img = np.zeros((mask.shape[0], mask.shape[1],3), dtype=np.uint8)
+    draw_lines(line_img, lines)
+    return line_img
 
-lines =hough_lines(mask, img, 55)
+lines =hough_lines(mask,threshold=55)
 cv2.imshow('hough',lines)
 
 ## R-L search
@@ -128,6 +129,6 @@ def RL_search(img):
 
     return ret
 
-decision = RL_search(img)
+decision = RL_search(cv2.cvtColor(lines, cv2.COLOR_RGB2GRAY))
 ##
 
