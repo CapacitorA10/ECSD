@@ -5,7 +5,7 @@ import numpy as np
 print(cv2.__version__)
 
 ## image read
-img = cv2.imread('lane.jpg')
+img = cv2.imread('lane_l.png')
 img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
 img = cv2.GaussianBlur(img, (3,3),0) #일부러 가우시안 입히기
 plt.imshow(img, cmap='gray')
@@ -53,14 +53,39 @@ def hough_lines(img, rho, theta, threshold, min_line_len, max_line_gap):
     draw_lines(line_imge, lines)
     return line_imge
 
-rho = 2; theta = np.pi/180
-threshold = 10; min_line_len = 50
+rho = 2
+theta = np.pi/180
+threshold = 20
+min_line_len = 50
 max_line_gap = 150
 
-lines = hough_lines(mask, rho, theta, threshold, min_line_len, max_line_gap)
+lines = cv2.cvtColor(hough_lines(mask, rho, theta, threshold, min_line_len, max_line_gap), cv2.COLOR_RGB2GRAY)
 
 plt.imshow(lines, cmap='gray')
 plt.show()
 
+## R-L search
+
+def RL_search(img):
+    y, x = img.shape
+    search_point = np.asarray([x//2, (4*y)//5]) #가로 중간, 세로 4/5지점
+    search_line = lines[search_point[1],:] # 해당 지점의 가로줄 추출
+    idx = (np.where(search_line>0) - search_point[0]).squeeze() # 해당 지점의 가로줄 유효값 추출
+    if not((idx > 0).any()) :
+        print('Right lane not detected')
+        return 'n'
+    if not((idx < 0).any()) :
+        print('left lane not detected')
+        return 'n'
+
+    right_min = abs(idx[np.where(idx * (idx>0))[0][0]])
+    left_min = abs(idx[np.where(idx * (idx<0))[0][-1]])
+    # 우측이 더 멀다 = 우측으로 가야함 = 'r' return
+    ret = 'r' if right_min>left_min else 'l'
+    if right_min==left_min: ret='n'
+
+    return ret
+
+decision = RL_search(img)
 ##
 
