@@ -1,30 +1,180 @@
 import RPi.GPIO as GPIO
-from RpiMotorLib import RpiMotorLib
-import time
+import time 
 
-################################
-# RPi and Motor Pre-allocations
-################################
-#
-#define GPIO pins
-direction= 22 # Direction (DIR) GPIO Pin
-step = 23 # Step GPIO Pin
-EN_pin = 24 # enable pin (LOW to enable)
+out1 = 13
+out2 = 11
+out3 = 15
+out4 = 12
 
-# Declare a instance of class pass GPIO pins numbers and the motor type
-mymotortest = RpiMotorLib.A4988Nema(direction, step, (21,21,21), "DRV8825")
-GPIO.setup(EN_pin,GPIO.OUT) # set enable pin as output
+i=0
+positive=0
+negative=0
+y=0
 
-###########################
-# Actual motor control
-###########################
-#
-GPIO.output(EN_pin,GPIO.LOW) # pull enable to low to enable motor
-mymotortest.motor_go(False, # True=Clockwise, False=Counter-Clockwise
-                     "Full" , # Step type (Full,Half,1/4,1/8,1/16,1/32)
-                     200, # number of steps
-                     .0005, # step delay [sec]
-                     False, # True = print verbose output 
-                     .05) # initial delay [sec]
 
-GPIO.cleanup() # clear GPIO allocations after run
+
+GPIO.setmode(GPIO.BOARD)
+GPIO.setup(out1,GPIO.OUT)
+GPIO.setup(out2,GPIO.OUT)
+GPIO.setup(out3,GPIO.OUT)
+GPIO.setup(out4,GPIO.OUT)
+
+print "First calibrate by giving some +ve and -ve values....."
+
+
+try:
+   while(1):
+      GPIO.output(out1,GPIO.LOW)
+      GPIO.output(out2,GPIO.LOW)
+      GPIO.output(out3,GPIO.LOW)
+      GPIO.output(out4,GPIO.LOW)
+      x = input()
+      if x>0 and x<=400:
+          for y in range(x,0,-1):
+              if negative==1:
+                  if i==7:
+                      i=0
+                  else:
+                      i=i+1
+                  y=y+2
+                  negative=0
+              positive=1
+              #print((x+1)-y)
+              if i==0:
+                  GPIO.output(out1,GPIO.HIGH)
+                  GPIO.output(out2,GPIO.LOW)
+                  GPIO.output(out3,GPIO.LOW)
+                  GPIO.output(out4,GPIO.LOW)
+                  time.sleep(0.03)
+                  #time.sleep(1)
+              elif i==1:
+                  GPIO.output(out1,GPIO.HIGH)
+                  GPIO.output(out2,GPIO.HIGH)
+                  GPIO.output(out3,GPIO.LOW)
+                  GPIO.output(out4,GPIO.LOW)
+                  time.sleep(0.03)
+                  #time.sleep(1)
+              elif i==2:  
+                  GPIO.output(out1,GPIO.LOW)
+                  GPIO.output(out2,GPIO.HIGH)
+                  GPIO.output(out3,GPIO.LOW)
+                  GPIO.output(out4,GPIO.LOW)
+                  time.sleep(0.03)
+                  #time.sleep(1)
+              elif i==3:    
+                  GPIO.output(out1,GPIO.LOW)
+                  GPIO.output(out2,GPIO.HIGH)
+                  GPIO.output(out3,GPIO.HIGH)
+                  GPIO.output(out4,GPIO.LOW)
+                  time.sleep(0.03)
+                  #time.sleep(1)
+              elif i==4:  
+                  GPIO.output(out1,GPIO.LOW)
+                  GPIO.output(out2,GPIO.LOW)
+                  GPIO.output(out3,GPIO.HIGH)
+                  GPIO.output(out4,GPIO.LOW)
+                  time.sleep(0.03)
+                  #time.sleep(1)
+              elif i==5:
+                  GPIO.output(out1,GPIO.LOW)
+                  GPIO.output(out2,GPIO.LOW)
+                  GPIO.output(out3,GPIO.HIGH)
+                  GPIO.output(out4,GPIO.HIGH)
+                  time.sleep(0.03)
+                  #time.sleep(1)
+              elif i==6:    
+                  GPIO.output(out1,GPIO.LOW)
+                  GPIO.output(out2,GPIO.LOW)
+                  GPIO.output(out3,GPIO.LOW)
+                  GPIO.output(out4,GPIO.HIGH)
+                  time.sleep(0.03)
+                  #time.sleep(1)
+              elif i==7:    
+                  GPIO.output(out1,GPIO.HIGH)
+                  GPIO.output(out2,GPIO.LOW)
+                  GPIO.output(out3,GPIO.LOW)
+                  GPIO.output(out4,GPIO.HIGH)
+                  time.sleep(0.03)
+                  #time.sleep(1)
+              if i==7:
+                  i=0
+                  continue
+              i=i+1
+      
+      
+      elif x<0 and x>=-400:
+          x=x*-1
+          for y in range(x,0,-1):
+              if positive==1:
+                  if i==0:
+                      i=7
+                  else:
+                      i=i-1
+                  y=y+3
+                  positive=0
+              negative=1
+              #print((x+1)-y) 
+              if i==0:
+                  GPIO.output(out1,GPIO.HIGH)
+                  GPIO.output(out2,GPIO.LOW)
+                  GPIO.output(out3,GPIO.LOW)
+                  GPIO.output(out4,GPIO.LOW)
+                  time.sleep(0.03)
+                  #time.sleep(1)
+              elif i==1:
+                  GPIO.output(out1,GPIO.HIGH)
+                  GPIO.output(out2,GPIO.HIGH)
+                  GPIO.output(out3,GPIO.LOW)
+                  GPIO.output(out4,GPIO.LOW)
+                  time.sleep(0.03)
+                  #time.sleep(1)
+              elif i==2:  
+                  GPIO.output(out1,GPIO.LOW)
+                  GPIO.output(out2,GPIO.HIGH)
+                  GPIO.output(out3,GPIO.LOW)
+                  GPIO.output(out4,GPIO.LOW)
+                  time.sleep(0.03)
+                  #time.sleep(1)
+              elif i==3:    
+                  GPIO.output(out1,GPIO.LOW)
+                  GPIO.output(out2,GPIO.HIGH)
+                  GPIO.output(out3,GPIO.HIGH)
+                  GPIO.output(out4,GPIO.LOW)
+                  time.sleep(0.03)
+                  #time.sleep(1)
+              elif i==4:  
+                  GPIO.output(out1,GPIO.LOW)
+                  GPIO.output(out2,GPIO.LOW)
+                  GPIO.output(out3,GPIO.HIGH)
+                  GPIO.output(out4,GPIO.LOW)
+                  time.sleep(0.03)
+                  #time.sleep(1)
+              elif i==5:
+                  GPIO.output(out1,GPIO.LOW)
+                  GPIO.output(out2,GPIO.LOW)
+                  GPIO.output(out3,GPIO.HIGH)
+                  GPIO.output(out4,GPIO.HIGH)
+                  time.sleep(0.03)
+                  #time.sleep(1)
+              elif i==6:    
+                  GPIO.output(out1,GPIO.LOW)
+                  GPIO.output(out2,GPIO.LOW)
+                  GPIO.output(out3,GPIO.LOW)
+                  GPIO.output(out4,GPIO.HIGH)
+                  time.sleep(0.03)
+                  #time.sleep(1)
+              elif i==7:    
+                  GPIO.output(out1,GPIO.HIGH)
+                  GPIO.output(out2,GPIO.LOW)
+                  GPIO.output(out3,GPIO.LOW)
+                  GPIO.output(out4,GPIO.HIGH)
+                  time.sleep(0.03)
+                  #time.sleep(1)
+              if i==0:
+                  i=7
+                  continue
+              i=i-1 
+
+              
+except KeyboardInterrupt:
+    GPIO.cleanup()
