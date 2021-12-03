@@ -5,11 +5,11 @@ import numpy as np
 print(cv2.__version__)
 YELLOW_LOW  = np.asarray([20, 100, 100])
 YELLOW_HIGH = np.asarray([30, 255, 255])
-WHITE_LOW   = np.asarray([0, 0, 230])
-WHITE_HIGH  = np.asarray([255, 80, 255])
+WHITE_LOW   = np.asarray([0, 0, 160])
+WHITE_HIGH  = np.asarray([50, 80, 255])
 
 ## image read
-img = cv2.imread('lane.png')
+img = cv2.imread('lanes/5.png')
 #img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
 img = cv2.GaussianBlur(img, (3,3),0) #일부러 가우시안 입히기
 cv2.imshow('img',img)
@@ -53,6 +53,7 @@ def region_interest(edge):
 
 edge = cv2.Canny(extracted_img, 50, 200)
 plt.imshow(edge, cmap='gray')
+mask = edge
 mask = region_interest(edge)
 plt.imshow(mask, cmap='gray')
 plt.show()
@@ -104,7 +105,7 @@ def hough_lines(mask, origin=0, threshold=55):
     draw_lines(line_img, lines)
     return line_img
 
-lines =hough_lines(mask,threshold=55)
+lines =hough_lines(mask,threshold=70)
 cv2.imshow('hough',lines)
 
 ## R-L search
@@ -121,14 +122,15 @@ def RL_search(img):
         print('left lane not detected')
         return 'n'
 
-    right_min = abs(idx[np.where(idx * (idx>0))[0][0]])
-    left_min = abs(idx[np.where(idx * (idx<0))[0][-1]])
+    right_min = abs(idx[np.where(idx * (idx>0))[0][0]]).mean()
+    left_min = abs(idx[np.where(idx * (idx<0))[0][-1]]).mean()
     # 우측이 더 멀다 = 우측으로 가야함 = 'r' return
-    ret = 'r' if right_min>left_min else 'l'
-    if right_min==left_min: ret='n'
+    ret = 'l' if right_min>left_min else 'r'
+    if right_min==left_min or abs(right_min-left_min)<10: ret='n'
 
     return ret
 
 decision = RL_search(cv2.cvtColor(lines, cv2.COLOR_RGB2GRAY))
+print(f"decision:{decision}")
 ##
 
