@@ -29,5 +29,6 @@ def imread(i,t):
     decision = lt.RL_search(cv2.cvtColor(lines, cv2.COLOR_RGB2GRAY))
     print(f"decision:{decision}")
     time.sleep(t)
+    return decision
 ##
 
