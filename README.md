@@ -1,3 +1,9 @@
+##USE main.py OR motor.ipynb
+
+you can change images in 'lanes' folder
+
+
+
 예제1
 
 https://makersportal.com/blog/raspberry-pi-stepper-motor-control-with-nema-17
