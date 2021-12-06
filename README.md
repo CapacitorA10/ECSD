@@ -1,4 +1,4 @@
-##USE main.py OR motor.ipynb
+##USE main.py OR main.ipynb (its are same)
 
 you can change images in 'lanes' folder
 
